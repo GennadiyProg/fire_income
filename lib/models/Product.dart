@@ -1,5 +1,4 @@
 class Product{
-
   String? name;
   String? category;
   String? measureUnit;
