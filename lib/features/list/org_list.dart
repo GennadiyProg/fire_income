@@ -1,38 +1,63 @@
-import 'dart:convert';
 import 'dart:core';
 
-import 'package:dio/dio.dart';
+import 'package:fire_income/features/dio_request.dart';
 import 'package:fire_income/models/Organization.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 
-class OrgList extends StatelessWidget {
+class OrgList extends StatefulWidget {
+  @override
+  State<OrgList> createState() => _OrgListState();
+}
+
+class _OrgListState extends State<OrgList> {
+  bool isloading = false;
   List<Organization> orgs;
 
+  _OrgListState()
+      : orgs = List.empty();
 
-  OrgList({super.key})
-    : orgs = List.empty() {
-    getAllOrgs().then((value) => orgs = value);
+  @override
+  void initState() {
+    isloading = true;
+
+    getAllOrgs().then((value) => {
+      setState(() {
+        orgs = value;
+        isloading = false;
+      })
+    });
   }
 
   Future<List<Organization>> getAllOrgs() async {
-    final response = await Dio().get('http://192.168.0.10:8080/admin/orgs');
+    final response = await DioRequest.getRequest('admin/orgs', {});
     final data = response.data as List<dynamic>;
     return data.map((e) => Organization.fromJson(e)).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    getAllOrgs().then((value) => null)
-    return ListView.builder(
-      itemCount: 2,
-      itemBuilder: (context, index) {
-        final org = orgs[index];
-        return ListTile(
-          title: Text(org.name ?? ''),
-          subtitle: Text(org.inn ?? ''),
-        );
-      },
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
+              itemCount: orgs.length,
+              itemBuilder: (context, index) {
+                final org = orgs[index];
+                return ListTile(
+                  title: Text(org.name ?? ''),
+                  subtitle: Text(org.inn ?? ''),
+                );
+              },
+          ),
+        ),
+        isloading
+            ? Container(
+              height: 50,
+              width: 50,
+              child: CircularProgressIndicator(),
+            )
+            : Text("")
+      ],
     );
   }
 }

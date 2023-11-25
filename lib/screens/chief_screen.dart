@@ -1,21 +1,21 @@
 import 'package:fire_income/features/form/add_org_form.dart';
-import 'package:fire_income/features/list/org_list.dart';
+import 'package:fire_income/features/list/supervisor_list.dart';
 import 'package:flutter/material.dart';
 
-import '../features/form/form_product.dart';
-
-class AdminScreen extends StatefulWidget{
+class ChiefScreen extends StatefulWidget{
 
   @override
   State createState() {
-    return _AdminScreen();
+    return _ChiefScreen();
   }
 }
 
-class _AdminScreen extends State<AdminScreen> {
+class _ChiefScreen extends State<ChiefScreen> {
   int _currentIndex = 0;
   final List<Widget> _children = [
-    OrgList(),
+    SupervisorList(),
+    AddOrgForm(),
+    AddOrgForm(),
     AddOrgForm()
   ];
 
@@ -24,16 +24,25 @@ class _AdminScreen extends State<AdminScreen> {
     return Scaffold(
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
           onTap: onTabTapped,
           currentIndex: _currentIndex,
           items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              label: 'Список организаций',
+              label: 'Персонал',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.add),
-              label: 'Добавить организацию',
+              icon: Icon(Icons.area_chart),
+              label: 'Статистика',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.location_city),
+              label: 'Филиалы',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart),
+              label: 'Товары',
             )
           ]
       ),

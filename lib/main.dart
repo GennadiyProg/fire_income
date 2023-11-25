@@ -1,5 +1,8 @@
-import 'package:fire_income/features/form/form_product.dart';
+import 'package:fire_income/features/form/add_supervisor_form.dart';
+import 'package:fire_income/screens/add_supervisor_screen.dart';
 import 'package:fire_income/screens/admin_screen.dart';
+import 'package:fire_income/screens/chief_screen.dart';
+import 'package:fire_income/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -17,7 +20,13 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: AdminScreen(),
+      routes: {
+        '/login': (context) => LoginScreen(),
+        '/admin': (context) => AdminScreen(),
+        '/chief': (context) => ChiefScreen(),
+        '/chief/new_supervisor': (context) => AddSupervisorScreen(),
+      },
+      initialRoute: '/login',
     );
   }
 }
