@@ -1,6 +1,7 @@
-import 'package:fire_income/features/form/add_supervisor_form.dart';
+import 'package:fire_income/screens/add_branch_screen.dart';
 import 'package:fire_income/screens/add_supervisor_screen.dart';
 import 'package:fire_income/screens/admin_screen.dart';
+import 'package:fire_income/screens/branch_info_screen.dart';
 import 'package:fire_income/screens/chief_screen.dart';
 import 'package:fire_income/screens/login_screen.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,8 @@ class MyApp extends StatelessWidget {
         '/admin': (context) => AdminScreen(),
         '/chief': (context) => ChiefScreen(),
         '/chief/new_supervisor': (context) => AddSupervisorScreen(),
+        '/chief/new_branch': (context) => AddBranchScreen(),
+        '/branch_info': (context) => BranchInfoScreen(ModalRoute.of(context)?.settings.arguments),
       },
       initialRoute: '/login',
     );

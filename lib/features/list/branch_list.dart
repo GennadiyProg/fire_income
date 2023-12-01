@@ -1,39 +1,39 @@
 import 'package:fire_income/features/dio_request.dart';
-import 'package:fire_income/models/User.dart';
+import 'package:fire_income/models/Branch.dart';
 import 'package:flutter/material.dart';
 
-class SupervisorList extends StatefulWidget {
+class BranchList extends StatefulWidget {
   @override
-  State<SupervisorList> createState() => _SupervisorListState();
+  State<BranchList> createState() => _BranchListState();
 }
 
-class _SupervisorListState extends State<SupervisorList> {
+class _BranchListState extends State<BranchList> {
   bool isloading = false;
-  List<User> supervisors;
+  List<Branch> branches;
 
-  _SupervisorListState() : supervisors = List.empty();
+  _BranchListState() : branches = List.empty();
 
   @override
   void initState() {
     isloading = true;
 
-    getAllSupervisors().then((value) => {
+    getAllBranches().then((value) => {
           setState(() {
-            supervisors = value;
+            branches = value;
             isloading = false;
           })
         });
   }
 
-  Future<List<User>> getAllSupervisors() async {
-    final response = await DioRequest.getRequest('chief/supervisors', {});
+  Future<List<Branch>> getAllBranches() async {
+    final response = await DioRequest.getRequest('branch/all', {});
     final data = response.data as List<dynamic>;
     print(data);
-    return data.map((e) => User.fromJson(e)).toList();
+    return data.map((e) => Branch.fromJson(e)).toList();
   }
 
-  Future<dynamic> deleteSupervisor(username) async {
-    return await DioRequest.deleteRequest('chief/supervisors/$username');
+  Future<dynamic> deleteBranch(kpp) async {
+    return await DioRequest.deleteRequest('chief/branches/$kpp');
   }
 
   @override
@@ -48,24 +48,23 @@ class _SupervisorListState extends State<SupervisorList> {
                   child: const CircularProgressIndicator(),
                 )
               : Expanded(
-                  child: supervisors.isNotEmpty
+                  child: branches.isNotEmpty
                       ? ListView.builder(
-                          itemCount: supervisors.length,
+                          itemCount: branches.length,
                           itemBuilder: (context, index) {
-                            final user = supervisors[index];
+                            final branch = branches[index];
                             return Row(
                               children: [
                                 Expanded(
                                     child: ListTile(
-                                      title: Text('${user.username}'),
-                                      subtitle: Text(
-                                          '${user.surname} ${user.firstName} ${user.lastName}'),
-                                    )
-                                ),
+                                  title: Text('${branch.city}, ${branch.street}, ${branch.house},'),
+                                  subtitle: Text('${branch.kpp}'),
+                                )),
                                 TextButton(
-                                    onPressed: () => {
-                                          deleteSupervisor(user.username).then((value) => initState())
-                                        },
+                                    onPressed: () => Navigator.pushNamed(context, '/branch_info', arguments: branch.kpp),
+                                    child: const Icon(Icons.edit_note)),
+                                TextButton(
+                                    onPressed: () => {deleteBranch(branch.kpp).then((value) => initState())},
                                     child: const Icon(Icons.delete))
                               ],
                             );
@@ -73,7 +72,7 @@ class _SupervisorListState extends State<SupervisorList> {
                         )
                       : Container(
                           alignment: Alignment.center,
-                          child: Text("Супервайзеры не найдены"),
+                          child: Text("Филиалы не найдены"),
                         )),
         ],
       ),
@@ -82,7 +81,7 @@ class _SupervisorListState extends State<SupervisorList> {
         padding: const EdgeInsets.all(15),
         child: FloatingActionButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/chief/new_supervisor');
+              Navigator.pushNamed(context, '/chief/new_branch');
             },
             child: const Icon(Icons.add)),
       )

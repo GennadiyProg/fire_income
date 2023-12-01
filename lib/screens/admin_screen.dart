@@ -2,8 +2,6 @@ import 'package:fire_income/features/form/add_org_form.dart';
 import 'package:fire_income/features/list/org_list.dart';
 import 'package:flutter/material.dart';
 
-import '../features/form/form_product.dart';
-
 class AdminScreen extends StatefulWidget{
 
   @override
