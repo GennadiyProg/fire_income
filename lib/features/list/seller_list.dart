@@ -22,6 +22,7 @@ class _SellerListState extends State<SellerList> {
   }
 
   Future<dynamic> deleteSeller(username) async {
+    //TODO заменить адрес на seller. Можно заменить на detattach
     return await DioRequest.deleteRequest('chief/supervisors/$username');
   }
 

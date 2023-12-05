@@ -4,10 +4,11 @@ import 'package:dio/dio.dart';
 
 class DioRequest{
   static String? token;
+  static String address = "http://192.168.43.47:8080";
 
   static getRequest(String url, Map<String, dynamic> params) {
     return Dio().get(
-      'http://192.168.0.10:8080/$url',
+      '$address/$url',
       queryParameters: params,
       options: Options(
           headers: {
@@ -19,7 +20,7 @@ class DioRequest{
 
   static postRequest(String url, Map<String, dynamic> data) {
     return Dio().post(
-      'http://192.168.0.10:8080/$url',
+      '$address/$url',
       data: data,
       options: Options(
           headers: {
@@ -32,7 +33,7 @@ class DioRequest{
 
   static deleteRequest(String url) {
     return Dio().delete(
-      'http://192.168.0.10:8080/$url',
+      '$address/$url',
       options: Options(
           headers: {
             HttpHeaders.authorizationHeader: 'Basic $token'

@@ -54,23 +54,26 @@ class _BranchInfoScreen extends State<BranchInfoScreen> {
               child: const CircularProgressIndicator(),
             )
           : Column(mainAxisSize: MainAxisSize.max, children: [
+              const SizedBox(height: 20),
               ListTile(
-                title: Text('${branch.city}, ${branch.street}, ${branch.house},'),
+                title:
+                    Text('${branch.city}, ${branch.street}, ${branch.house},'),
                 subtitle: Text('${branch.kpp}'),
               ),
               Stack(children: [
                 SellerList(branch.sellers),
                 Flexible(
-                  flex: 1,
+                    flex: 1,
                     child: Container(
-                  alignment: Alignment.bottomRight,
-                  padding: const EdgeInsets.all(15),
-                  child: FloatingActionButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/chief/new_supervisor');
-                      },
-                      child: const Icon(Icons.add)),
-                ))
+                      alignment: Alignment.bottomRight,
+                      padding: const EdgeInsets.all(15),
+                      child: FloatingActionButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, '/chief/new_supervisor');
+                          },
+                          child: const Icon(Icons.add)),
+                    ))
               ])
             ]),
     );
