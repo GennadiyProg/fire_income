@@ -3,6 +3,7 @@ import 'package:fire_income/features/list/org_list.dart';
 import 'package:flutter/material.dart';
 
 class AdminScreen extends StatefulWidget{
+  const AdminScreen({super.key});
 
   @override
   State createState() {
@@ -13,27 +14,27 @@ class AdminScreen extends StatefulWidget{
 class _AdminScreen extends State<AdminScreen> {
   int _currentIndex = 0;
   final List<Widget> _children = [
-    OrgList(),
-    AddOrgForm()
+    const OrgList(),
+    const AddOrgForm()
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _children[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-          onTap: onTabTapped,
-          currentIndex: _currentIndex,
-          items: const [
-            BottomNavigationBarItem(
+      bottomNavigationBar: NavigationBar(
+          onDestinationSelected: onTabTapped,
+          selectedIndex: _currentIndex,
+          destinations: const [
+            NavigationDestination(
               icon: Icon(Icons.home),
-              label: 'Список организаций',
+              label: 'Организации',
             ),
-            BottomNavigationBarItem(
+            NavigationDestination(
               icon: Icon(Icons.add),
               label: 'Добавить организацию',
             )
-          ]
+          ],
       ),
     );
   }

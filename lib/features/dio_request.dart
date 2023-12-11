@@ -1,10 +1,11 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:fire_income/dev_variables.dart';
 
 class DioRequest{
   static String? token;
-  static String address = "http://192.168.43.47:8080";
+  static String address = devApiAddress ?? "http://192.168.43.47:8080";
 
   static getRequest(String url, Map<String, dynamic> params) {
     return Dio().get(

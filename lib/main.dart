@@ -4,6 +4,7 @@ import 'package:fire_income/screens/admin_screen.dart';
 import 'package:fire_income/screens/branch_info_screen.dart';
 import 'package:fire_income/screens/chief_screen.dart';
 import 'package:fire_income/screens/login_screen.dart';
+import 'package:fire_income/styles/styles.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -17,10 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: styles.mainTheme,
       routes: {
         '/login': (context) => LoginScreen(),
         '/admin': (context) => AdminScreen(),
@@ -30,6 +28,7 @@ class MyApp extends StatelessWidget {
         '/branch_info': (context) => BranchInfoScreen(ModalRoute.of(context)?.settings.arguments),
       },
       initialRoute: '/login',
+      debugShowCheckedModeBanner: false,
     );
   }
 }

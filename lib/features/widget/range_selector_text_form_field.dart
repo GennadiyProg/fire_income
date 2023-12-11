@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 class RangeSelectorTextFormField extends StatelessWidget {
   final String labelText;
   final void Function(String value) valueSetter;
+  final TextInputAction? textInputAction;
 
-  RangeSelectorTextFormField(
-      {Key? key, required this.labelText, required this.valueSetter})
+  const RangeSelectorTextFormField(
+      {Key? key,
+      required this.labelText,
+      required this.valueSetter,
+      this.textInputAction = TextInputAction.next})
       : super(key: key);
 
   @override
@@ -16,6 +20,7 @@ class RangeSelectorTextFormField extends StatelessWidget {
         labelText: labelText,
       ),
       onSaved: (newValue) => valueSetter(newValue ?? ''),
+      textInputAction: textInputAction,
     );
   }
 }

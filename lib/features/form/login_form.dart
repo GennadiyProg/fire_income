@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:fire_income/features/dio_request.dart';
 import 'package:fire_income/features/widget/range_selector_text_form_field.dart';
@@ -6,11 +7,21 @@ import 'package:fire_income/models/User.dart';
 import 'package:flutter/material.dart';
 
 class LoginForm extends StatelessWidget {
-  Future<User> loadUser() async {
-    final response = await DioRequest.getRequest('loadUser', {});
-    User user = User.fromJson(response.data);
-    print(user);
-    return user;
+  const LoginForm({super.key});
+
+  Future<User?> loadUser(context) async {
+    try {
+      final response = await DioRequest.getRequest('loadUser', {});
+      User user = User.fromJson(response.data);
+      print(user);
+      return user;
+    } catch (e) {
+      log('$e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("$e")),
+      );
+    }
+    return null;
   }
 
   void selectRoute(BuildContext context, var userRole) {
@@ -52,13 +63,17 @@ class LoginForm extends StatelessWidget {
                   ConstrainedBox(
                     constraints: BoxConstraints.tight(const Size(200, 50)),
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Processing Data')),
                         );
                         _formKey.currentState?.save();
-                        DioRequest.token = base64Encode(utf8.encode('$username:$password'));
-                        loadUser().then((user) => selectRoute(context, user.role));
+                        DioRequest.token =
+                            base64Encode(utf8.encode('$username:$password'));
+                        final user = await loadUser(context);
+                        if (context.mounted && user != null) {
+                          selectRoute(context, user.role);
+                        }
                       },
                       child: const Text('Submit'),
                     ),
