@@ -1,30 +1,19 @@
+import 'dart:developer';
+
 import 'package:fire_income/features/dio_request.dart';
+import 'package:fire_income/features/widget/show_snack_bar.dart';
 import 'package:fire_income/models/User.dart';
+import 'package:fire_income/styles/styles.dart';
 import 'package:flutter/material.dart';
 
 class SupervisorList extends StatefulWidget {
+  const SupervisorList({super.key});
+
   @override
   State<SupervisorList> createState() => _SupervisorListState();
 }
 
 class _SupervisorListState extends State<SupervisorList> {
-  bool isloading = false;
-  List<User> supervisors;
-
-  _SupervisorListState() : supervisors = List.empty();
-
-  @override
-  void initState() {
-    isloading = true;
-
-    getAllSupervisors().then((value) => {
-          setState(() {
-            supervisors = value;
-            isloading = false;
-          })
-        });
-  }
-
   Future<List<User>> getAllSupervisors() async {
     final response = await DioRequest.getRequest('chief/supervisors', {});
     final data = response.data as List<dynamic>;
@@ -33,59 +22,68 @@ class _SupervisorListState extends State<SupervisorList> {
   }
 
   Future<dynamic> deleteSupervisor(username) async {
-    return await DioRequest.deleteRequest('chief/supervisors/$username');
+    try {
+      final res = await DioRequest.deleteRequest('chief/supervisors/$username');
+      setState(() {});
+      if (mounted && res != null) {
+        showDeleteSnackBar(context);
+      }
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+      log(e.toString());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Column(
-        children: [
-          isloading
-              ? Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.only(top: 50),
-                  child: const CircularProgressIndicator(),
-                )
-              : Expanded(
-                  child: supervisors.isNotEmpty
-                      ? ListView.builder(
-                          itemCount: supervisors.length,
-                          itemBuilder: (context, index) {
-                            final user = supervisors[index];
-                            return Row(
-                              children: [
-                                Expanded(
-                                    child: ListTile(
-                                      title: Text('${user.username}'),
-                                      subtitle: Text(
-                                          '${user.surname} ${user.firstName} ${user.lastName}'),
-                                    )
-                                ),
-                                TextButton(
-                                    onPressed: () => {
-                                          deleteSupervisor(user.username).then((value) => initState())
-                                        },
-                                    child: const Icon(Icons.delete))
-                              ],
-                            );
-                          },
-                        )
-                      : Container(
-                          alignment: Alignment.center,
-                          child: Text("Супервайзеры не найдены"),
-                        )),
-        ],
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/chief/new_supervisor')
+              .then((value) => setState(() {}));
+        },
+        child: const Icon(Icons.add),
       ),
-      Container(
-        alignment: Alignment.bottomRight,
-        padding: const EdgeInsets.all(15),
-        child: FloatingActionButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/chief/new_supervisor');
-            },
-            child: const Icon(Icons.add)),
-      )
-    ]);
+      body: Center(
+        child: FutureBuilder(
+          future: getAllSupervisors(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final supervisors = snapshot.data ?? [];
+              return supervisors.isNotEmpty
+                  ? ListView.separated(
+                      itemCount: supervisors.length,
+                      itemBuilder: (context, index) {
+                        final user = supervisors[index];
+                        return ListTile(
+                          title: Text(user.username ?? ''),
+                          subtitle: Text(
+                              "${user.surname} ${user.firstName} ${user.lastName}"),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete),
+                            color: styles.dangerColor,
+                            onPressed: () async {
+                              await deleteSupervisor(user.username);
+                            },
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) => const Divider(),
+                    )
+                  : const Text("Супервайзеры не найдены");
+            }
+
+            if (snapshot.hasError) {
+              return Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Text('Error: ${snapshot.error}'),
+              );
+            }
+
+            return const CircularProgressIndicator();
+          },
+        ),
+      ),
+    );
   }
 }

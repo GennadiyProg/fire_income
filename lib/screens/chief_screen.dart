@@ -4,6 +4,7 @@ import 'package:fire_income/features/list/branch_list.dart';
 import 'package:flutter/material.dart';
 
 class ChiefScreen extends StatefulWidget{
+  const ChiefScreen({super.key});
 
   @override
   State createState() {
@@ -14,34 +15,33 @@ class ChiefScreen extends StatefulWidget{
 class _ChiefScreen extends State<ChiefScreen> {
   int _currentIndex = 0;
   final List<Widget> _children = [
-    SupervisorList(),
-    AddOrgForm(),
+    const SupervisorList(),
+    const AddOrgForm(),
     BranchList(),
-    AddOrgForm()
+    const AddOrgForm()
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _children[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          onTap: onTabTapped,
-          currentIndex: _currentIndex,
-          items: const [
-            BottomNavigationBarItem(
+      bottomNavigationBar: NavigationBar(
+          onDestinationSelected: onTabTapped,
+          selectedIndex: _currentIndex,
+          destinations: const [
+            NavigationDestination(
               icon: Icon(Icons.home),
               label: 'Персонал',
             ),
-            BottomNavigationBarItem(
+            NavigationDestination(
               icon: Icon(Icons.area_chart),
               label: 'Статистика',
             ),
-            BottomNavigationBarItem(
+            NavigationDestination(
               icon: Icon(Icons.location_city),
               label: 'Филиалы',
             ),
-            BottomNavigationBarItem(
+            NavigationDestination(
               icon: Icon(Icons.shopping_cart),
               label: 'Товары',
             )

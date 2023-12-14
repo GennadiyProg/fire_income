@@ -1,58 +1,49 @@
 import 'package:fire_income/features/dio_request.dart';
 import 'package:fire_income/models/User.dart';
+import 'package:fire_income/styles/styles.dart';
 import 'package:flutter/material.dart';
 
 class SellerList extends StatefulWidget {
-  List<User>? sellers;
+  final String kpp;
+  final List<User> sellers;
 
-  SellerList(this.sellers, {super.key});
+  const SellerList(this.sellers, {super.key, required this.kpp});
 
   @override
   State<SellerList> createState() => _SellerListState();
 }
 
 class _SellerListState extends State<SellerList> {
-  List<User> sellers;
-
-  _SellerListState() : sellers = List.empty();
-
-  @override
-  void initState() {
-    sellers = widget.sellers!;
-  }
 
   Future<dynamic> deleteSeller(username) async {
-    //TODO заменить адрес на seller. Можно заменить на detattach
-    return await DioRequest.deleteRequest('chief/supervisors/$username');
+    return await DioRequest.deleteRequest(
+        'branch/${widget.kpp}/sellers/detach');
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(mainAxisSize: MainAxisSize.min, children: [
-      Flexible(
-          child: sellers.isNotEmpty
-              ? ListView.builder(
-                  itemCount: sellers.length,
-                  itemBuilder: (context, index) {
-                    final user = sellers[index];
-                    return Row(
-                      children: [
-                        Expanded(
-                            child: ListTile(
-                          title: Text('${user.username}'),
-                          subtitle: Text('${user.surname} ${user.firstName} ${user.lastName}'),
-                        )),
-                        TextButton(
-                            onPressed: () => {deleteSeller(user.username).then((value) => initState())},
-                            child: const Icon(Icons.delete))
-                      ],
-                    );
+    final sellers = widget.sellers;
+
+    return sellers.isNotEmpty
+        ? ListView.separated(
+            itemCount: sellers.length,
+            itemBuilder: (context, index) {
+              final user = sellers[index];
+              return ListTile(
+                title: Text('${user.username}'),
+                subtitle:
+                    Text('${user.surname} ${user.firstName} ${user.lastName}'),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete),
+                  color: styles.dangerColor,
+                  onPressed: () {
+                    deleteSeller(user.username);
                   },
-                )
-              : Container(
-                  alignment: Alignment.topCenter,
-                  child: Text("Продавцы не найдены"),
-                ))
-    ]);
+                ),
+              );
+            },
+            separatorBuilder: (context, index) => const Divider(),
+          )
+        : const Text("Продавцы не найдены");
   }
 }

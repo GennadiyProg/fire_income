@@ -1,44 +1,24 @@
+import 'dart:developer';
+
 import 'package:fire_income/features/dio_request.dart';
+import 'package:fire_income/features/form/add_seller_form.dart';
 import 'package:fire_income/features/list/seller_list.dart';
 import 'package:fire_income/models/Branch.dart';
+import 'package:fire_income/styles/styles.dart';
 import 'package:flutter/material.dart';
 
 class BranchInfoScreen extends StatefulWidget {
-  var kpp;
+  final String kpp;
 
-  BranchInfoScreen(this.kpp, {super.key});
+  const BranchInfoScreen(this.kpp, {super.key});
 
   @override
-  State createState() {
-    return _BranchInfoScreen();
-  }
+  State createState() => _BranchInfoScreen();
 }
 
 class _BranchInfoScreen extends State<BranchInfoScreen> {
-  String kpp;
-  Branch branch;
-  bool isloading = false;
-
-  _BranchInfoScreen()
-      : branch = Branch.empty(),
-        kpp = '';
-
-  @override
-  void initState() {
-    isloading = true;
-    setState(() {
-      kpp = widget.kpp;
-    });
-    getBranch().then((value) => {
-          setState(() {
-            branch = value;
-            isloading = false;
-          })
-        });
-  }
-
   Future<Branch> getBranch() async {
-    final response = await DioRequest.getRequest('branch/$kpp', {});
+    final response = await DioRequest.getRequest('branch/${widget.kpp}', {});
     final data = response.data as dynamic;
     print(data);
     return Branch.fromJson(data);
@@ -47,35 +27,60 @@ class _BranchInfoScreen extends State<BranchInfoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: isloading
-          ? Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.only(top: 50),
-              child: const CircularProgressIndicator(),
-            )
-          : Column(mainAxisSize: MainAxisSize.max, children: [
-              const SizedBox(height: 20),
-              ListTile(
-                title:
-                    Text('${branch.city}, ${branch.street}, ${branch.house},'),
-                subtitle: Text('${branch.kpp}'),
-              ),
-              Stack(children: [
-                SellerList(branch.sellers),
-                Flexible(
-                    flex: 1,
-                    child: Container(
-                      alignment: Alignment.bottomRight,
-                      padding: const EdgeInsets.all(15),
-                      child: FloatingActionButton(
-                          onPressed: () {
-                            Navigator.pushNamed(
-                                context, '/chief/new_supervisor');
-                          },
-                          child: const Icon(Icons.add)),
-                    ))
-              ])
-            ]),
+      appBar: AppBar(title: Text(widget.kpp)),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddSellerForm(
+                      widget.kpp,
+                    )),
+          ).then((value) => setState((){}));
+        },
+        child: const Icon(Icons.add),
+      ),
+      body: Center(
+        child: FutureBuilder(
+          future: getBranch(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final branch = snapshot.data ?? Branch();
+              final sellers = branch.sellers ?? [];
+
+              return Column(
+                children: [
+                  ListTile(
+                    title: Text(
+                      '${branch.city}, ${branch.street}, ${branch.house}',
+                    ),
+                    subtitle: Text(branch.kpp ?? ''),
+                  ),
+                  const SizedBox(height: 15),
+                  Text(
+                    "Продавцы",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(fontSize: 18),
+                  ),
+                  Expanded(child: SellerList(sellers, kpp: widget.kpp)),
+                ],
+              );
+            }
+
+            if (snapshot.hasError) {
+              log(snapshot.error.toString());
+              return Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Text('Error: ${snapshot.error}'),
+              );
+            }
+
+            return const CircularProgressIndicator();
+          },
+        ),
+      ),
     );
   }
 }

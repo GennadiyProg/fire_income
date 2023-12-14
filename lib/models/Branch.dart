@@ -26,8 +26,9 @@ class Branch {
     b.street = json['street'];
     b.house = json['house'];
     b.kpp = json['kpp'];
-    List<dynamic> sellers = json['sellers'].map((e) => User.fromJson(e)).toList();
-    b.sellers = sellers.map((e) => User.fromJson(e)).toList();
+    List<dynamic> sellers =
+        json['sellers'].map((e) => User.fromJson(e)).toList();
+    b.sellers = [...sellers];
     return b;
   }
 

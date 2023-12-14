@@ -1,35 +1,48 @@
 import 'package:fire_income/features/dio_request.dart';
+import 'package:fire_income/features/process_data.dart';
 import 'package:fire_income/features/widget/range_selector_text_form_field.dart';
 import 'package:fire_income/models/User.dart';
+import 'package:fire_income/styles/styles.dart';
 import 'package:flutter/material.dart';
 
-class AddSupervisorForm extends StatelessWidget {
+class AddSupervisorForm extends StatefulWidget {
+  const AddSupervisorForm({super.key});
+
+  @override
+  State<AddSupervisorForm> createState() => _AddSupervisorFormState();
+}
+
+class _AddSupervisorFormState extends State<AddSupervisorForm> {
+  final _formKey = GlobalKey<FormState>();
+  User user = User.empty();
+
+  Future<void> createSupervisor() async {
+    await processDataSnack(
+      context,
+      () async {
+        _formKey.currentState?.save();
+        final response = await DioRequest.postRequest(
+            'chief/supervisors/create', user.toJson());
+        final data = response.data;
+        _formKey.currentState?.reset();
+        return data;
+      },
+      successBuilder: (data) => 'Добавлен новый пользователь $data',
+    );
+
+    if (mounted) Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
-    User user = User.empty();
-
-    Future<String> createSupervisor() async {
-      final response = await DioRequest.postRequest('chief/supervisors/create', user.toJson());
-      final data = response.data;
-      print(data);
-      return data;
-    }
-
-    void goPrev(value) {
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Добавлен новый пользователь $value')),
-      );
-      Navigator.pop(context);
-    }
-
-    return Form(
-      key: _formKey,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 50, 10, 10),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Добавить супервайзера"),
+      ),
+      body: Form(
+        key: _formKey,
         child: SingleChildScrollView(
+          padding: const EdgeInsets.all(10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -56,6 +69,7 @@ class AddSupervisorForm extends StatelessWidget {
               RangeSelectorTextFormField(
                 labelText: "Пароль",
                 valueSetter: (value) => user.password = value,
+                textInputAction: TextInputAction.done,
               ),
               const SizedBox(height: 20),
               Padding(
@@ -64,12 +78,8 @@ class AddSupervisorForm extends StatelessWidget {
                   ConstrainedBox(
                     constraints: BoxConstraints.tight(const Size(200, 50)),
                     child: ElevatedButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Processing Data')),
-                        );
-                        _formKey.currentState?.save();
-                        createSupervisor().then((value) => goPrev(value));
+                      onPressed: () async {
+                        await createSupervisor();
                       },
                       child: const Text('Submit'),
                     ),
