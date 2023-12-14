@@ -8,7 +8,6 @@ class Organization{
 
   Organization.empty();
 
-
   Organization({this.id, this.name, this.inn});
 
   Map<String, dynamic> toJson() => {

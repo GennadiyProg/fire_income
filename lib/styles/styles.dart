@@ -14,6 +14,8 @@ class Styles {
 
   Color get dangerColor => const Color(0xffff4444);
 
+  Color get caption => const Color(0xffadadad);
+
   ThemeData get mainTheme => ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: brandColor),
         useMaterial3: true,

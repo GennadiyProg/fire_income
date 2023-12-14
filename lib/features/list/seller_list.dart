@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:fire_income/features/dio_request.dart';
+import 'package:fire_income/features/widget/show_snack_bar.dart';
 import 'package:fire_income/models/User.dart';
 import 'package:fire_income/styles/styles.dart';
 import 'package:flutter/material.dart';
@@ -14,10 +17,18 @@ class SellerList extends StatefulWidget {
 }
 
 class _SellerListState extends State<SellerList> {
-
-  Future<dynamic> deleteSeller(username) async {
-    return await DioRequest.deleteRequest(
-        'branch/${widget.kpp}/sellers/detach');
+  Future<void> deleteSeller(username) async {
+    try {
+      final res =
+          await DioRequest.deleteRequest('branch/${widget.kpp}/sellers/detach');
+      setState(() {});
+      if (mounted && res != null) {
+        showDeleteSnackBar(context, text: "Продавец успешно откреплён");
+      }
+    } catch (e, s) {
+      if (mounted) showErrorSnackBar(context, e);
+      log("Error", error: e, stackTrace: s);
+    }
   }
 
   @override
@@ -36,8 +47,8 @@ class _SellerListState extends State<SellerList> {
                 trailing: IconButton(
                   icon: const Icon(Icons.delete),
                   color: styles.dangerColor,
-                  onPressed: () {
-                    deleteSeller(user.username);
+                  onPressed: () async {
+                    await deleteSeller(user.username);
                   },
                 ),
               );

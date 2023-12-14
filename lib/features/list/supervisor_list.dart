@@ -21,16 +21,16 @@ class _SupervisorListState extends State<SupervisorList> {
     return data.map((e) => User.fromJson(e)).toList();
   }
 
-  Future<dynamic> deleteSupervisor(username) async {
+  Future<void> deleteSupervisor(username) async {
     try {
       final res = await DioRequest.deleteRequest('chief/supervisors/$username');
       setState(() {});
       if (mounted && res != null) {
         showDeleteSnackBar(context);
       }
-    } catch (e) {
+    } catch (e, s) {
       if (mounted) showErrorSnackBar(context, e);
-      log(e.toString());
+      log("Error", error: e, stackTrace: s);
     }
   }
 
@@ -74,6 +74,7 @@ class _SupervisorListState extends State<SupervisorList> {
             }
 
             if (snapshot.hasError) {
+              log(snapshot.error.toString(), stackTrace: snapshot.stackTrace);
               return Padding(
                 padding: const EdgeInsets.only(top: 16),
                 child: Text('Error: ${snapshot.error}'),

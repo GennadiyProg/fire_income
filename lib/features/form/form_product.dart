@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:fire_income/models/Category.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/Product.dart';
 
 class FormProduct extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
@@ -41,7 +41,7 @@ class FormProduct extends StatelessWidget {
                 constraints: BoxConstraints.tight(const Size(200, 50)),
                 child: TextFormField(
                   onSaved: (String? value) {
-                    product.category = value;
+                    product.category = Category(name: value);
                   },
                 ),
               ),
@@ -75,9 +75,7 @@ class FormProduct extends StatelessWidget {
                     final response = await Dio().post(
                         'http://localhost:8080/product/',
                         data: product.toJson(),
-                        options: Options(
-                            contentType: Headers.jsonContentType
-                        ));
+                        options: Options(contentType: Headers.jsonContentType));
                     final data = response.data as Map<String, dynamic>;
                     print(data.toString());
                   },

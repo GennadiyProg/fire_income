@@ -1,24 +1,33 @@
+
+import 'Category.dart';
+
 class Product{
   String? name;
-  String? category;
+  Category? category;
   String? measureUnit;
-
 
   Product.empty();
 
   Product({this.name, this.category, this.measureUnit});
 
-  factory Product.fromJson(Map<String, dynamic> json) => Product(
-      name: json['name'],
-      category: json['category'],
-      measureUnit: json['measureUnit'],
-  );
+  static Product fromJson(Map<String, dynamic> json) {
+    Product p = Product();
+    p.name = json['name'];
+    p.category = Category.fromJson(json['category']);
+    p.measureUnit = json['measureUnit'];
+
+    return p;
+  }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
     'name': name,
-    'category': category,
+    'category': category?.toJson(),
     'measureUnit': measureUnit,
   };
+}
 
-
+enum MeasureUnit {
+  L,
+  KG,
+  UNIT
 }

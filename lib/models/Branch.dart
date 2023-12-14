@@ -12,13 +12,6 @@ class Branch {
 
   Branch({this.id, this.city, this.street, this.house, this.kpp});
 
-  // Branch.fromJson(Map<String, dynamic> json)
-  //     : id = json['id'],
-  //       city = json['city'],
-  //       street = json['street'],
-  //       house = json['house'],
-  //       kpp = json['kpp'];
-
   static Branch fromJson(Map<String, dynamic> json) {
     Branch b = Branch();
     b.id = json['id'];
