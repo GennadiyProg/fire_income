@@ -17,6 +17,7 @@ class CategoryList extends StatefulWidget {
 }
 
 class _CategoryListState extends State<CategoryList> {
+
   Future<List<Category>> getAllCategories() async {
     final response = await DioRequest.getRequest('category/', {});
     final data = response.data as List<dynamic>;

@@ -8,7 +8,9 @@ import 'package:fire_income/styles/styles.dart';
 import 'package:flutter/material.dart';
 
 class BranchList extends StatefulWidget {
-  const BranchList({super.key});
+  final String role;
+
+  const BranchList({super.key, required this.role});
 
   @override
   State<BranchList> createState() => _BranchListState();
@@ -16,6 +18,7 @@ class BranchList extends StatefulWidget {
 
 class _BranchListState extends State<BranchList> {
   List<Branch> branches = List.empty();
+  late final bool isChief;
 
   Future<List<Branch>> getAllBranches() async {
     final response = await DioRequest.getRequest('branch/all', {});
@@ -38,15 +41,23 @@ class _BranchListState extends State<BranchList> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    isChief = widget.role == "CHIEF";
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/chief/new_branch')
-              .then((value) => setState(() {}));
-        },
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: isChief
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/chief/new_branch')
+                    .then((value) => setState(() {}));
+              },
+              child: const Icon(Icons.add),
+            )
+          : null,
       body: Center(
         child: FutureBuilder(
           future: getAllBranches(),
@@ -62,19 +73,20 @@ class _BranchListState extends State<BranchList> {
                           title: Text(
                               '${branch.city}, ${branch.street}, ${branch.house}'),
                           subtitle: Text('${branch.kpp}'),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete),
-                            color: styles.dangerColor,
-                            onPressed: () async {
-                              await deleteBranch(branch.kpp);
-                            },
-                          ),
+                          trailing: isChief
+                              ? IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  color: styles.dangerColor,
+                                  onPressed: () async {
+                                    await deleteBranch(branch.kpp);
+                                  },
+                                )
+                              : null,
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                  builder: (context) => BranchInfoScreen(
-                                        branch.kpp ?? ''
-                                      )),
+                                  builder: (context) =>
+                                      BranchInfoScreen(branch.kpp ?? '')),
                             );
                           },
                         );

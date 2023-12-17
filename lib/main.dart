@@ -4,6 +4,8 @@ import 'package:fire_income/screens/admin_screen.dart';
 import 'package:fire_income/screens/branch_info_screen.dart';
 import 'package:fire_income/screens/chief_screen.dart';
 import 'package:fire_income/screens/login_screen.dart';
+import 'package:fire_income/screens/seller_screen.dart';
+import 'package:fire_income/screens/supervisor_screen.dart';
 import 'package:fire_income/styles/styles.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +25,8 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginScreen(),
         '/admin': (context) => const AdminScreen(),
         '/chief': (context) => const ChiefScreen(),
+        '/supervisor': (context) => const SupervisorScreen(),
+        '/seller': (context) => const SellerScreen(),
         '/chief/new_supervisor': (context) => AddSupervisorScreen(),
         '/chief/new_branch': (context) => const AddBranchScreen(),
       },

@@ -6,23 +6,23 @@ import 'package:fire_income/features/widget/range_selector_text_form_field.dart'
 import 'package:fire_income/models/User.dart';
 import 'package:flutter/material.dart';
 
+Future<User?> loadUser(context) async {
+  try {
+    final response = await DioRequest.getRequest('loadUser', {});
+    User user = User.fromJson(response.data);
+    print(user);
+    return user;
+  } catch (e) {
+    log('$e');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("$e")),
+    );
+  }
+  return null;
+}
+
 class LoginForm extends StatelessWidget {
   const LoginForm({super.key});
-
-  Future<User?> loadUser(context) async {
-    try {
-      final response = await DioRequest.getRequest('loadUser', {});
-      User user = User.fromJson(response.data);
-      print(user);
-      return user;
-    } catch (e) {
-      log('$e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("$e")),
-      );
-    }
-    return null;
-  }
 
   void selectRoute(BuildContext context, var userRole) {
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -30,6 +30,10 @@ class LoginForm extends StatelessWidget {
       Navigator.pushNamedAndRemoveUntil(context, '/admin', (route) => false);
     } else if (userRole == "CHIEF") {
       Navigator.pushNamedAndRemoveUntil(context, '/chief', (route) => false);
+    }  else if (userRole == "SUPERVISOR") {
+      Navigator.pushNamedAndRemoveUntil(context, '/supervisor', (route) => false);
+    } else if (userRole == "SELLER") {
+      Navigator.pushNamedAndRemoveUntil(context, '/seller', (route) => false);
     }
   }
 

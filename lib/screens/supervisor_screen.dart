@@ -4,21 +4,18 @@ import 'package:fire_income/features/list/supervisor_list.dart';
 import 'package:fire_income/features/list/branch_list.dart';
 import 'package:flutter/material.dart';
 
-class ChiefScreen extends StatefulWidget {
-  const ChiefScreen({super.key});
+class SupervisorScreen extends StatefulWidget{
+  const SupervisorScreen({super.key});
 
   @override
-  State createState() {
-    return _ChiefScreen();
-  }
+  State createState() => _SupervisorScreen();
+
 }
 
-class _ChiefScreen extends State<ChiefScreen> {
+class _SupervisorScreen extends State<SupervisorScreen> {
   int _currentIndex = 0;
   final List<Widget> _children = [
-    const SupervisorList(),
-    const AddOrgForm(),
-    const BranchList(role: "CHIEF"),
+    const BranchList(role: "SUPERVISOR"),
     const CategoryList()
   ];
 
@@ -31,14 +28,6 @@ class _ChiefScreen extends State<ChiefScreen> {
           selectedIndex: _currentIndex,
           destinations: const [
             NavigationDestination(
-              icon: Icon(Icons.home),
-              label: 'Персонал',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.area_chart),
-              label: 'Статистика',
-            ),
-            NavigationDestination(
               icon: Icon(Icons.location_city),
               label: 'Филиалы',
             ),
@@ -46,7 +35,8 @@ class _ChiefScreen extends State<ChiefScreen> {
               icon: Icon(Icons.shopping_cart),
               label: 'Товары',
             )
-          ]),
+          ]
+      ),
     );
   }
 

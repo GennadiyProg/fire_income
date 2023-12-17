@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:fire_income/styles/styles.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,7 +26,7 @@ Future<void> processDataSnack<T>(
     }
 
     print(res.toString());
-  } catch (e) {
+  } catch (e, s) {
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -34,6 +35,6 @@ Future<void> processDataSnack<T>(
         ),
       );
     }
-    print(e.toString());
+    log("Error", error: e, stackTrace: s);
   }
 }

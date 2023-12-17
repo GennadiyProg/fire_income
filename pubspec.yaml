@@ -38,6 +38,7 @@ dependencies:
   dio: ^5.3.3
   json_annotation: ^4.8.1
   dropdown_button2: ^2.3.9
+  intl: 0.18.0
 
 dev_dependencies:
   flutter_test:

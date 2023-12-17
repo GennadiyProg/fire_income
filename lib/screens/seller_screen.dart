@@ -1,25 +1,22 @@
 import 'package:fire_income/features/form/add_org_form.dart';
+import 'package:fire_income/features/form/sale_form.dart';
 import 'package:fire_income/features/list/category_list.dart';
 import 'package:fire_income/features/list/supervisor_list.dart';
 import 'package:fire_income/features/list/branch_list.dart';
 import 'package:flutter/material.dart';
 
-class ChiefScreen extends StatefulWidget {
-  const ChiefScreen({super.key});
+class SellerScreen extends StatefulWidget{
+  const SellerScreen({super.key});
 
   @override
-  State createState() {
-    return _ChiefScreen();
-  }
+  State createState() => _SellerScreen();
 }
 
-class _ChiefScreen extends State<ChiefScreen> {
+class _SellerScreen extends State<SellerScreen> {
   int _currentIndex = 0;
   final List<Widget> _children = [
-    const SupervisorList(),
-    const AddOrgForm(),
-    const BranchList(role: "CHIEF"),
-    const CategoryList()
+    const CategoryList(),
+    const AddSaleForm(),
   ];
 
   @override
@@ -31,22 +28,15 @@ class _ChiefScreen extends State<ChiefScreen> {
           selectedIndex: _currentIndex,
           destinations: const [
             NavigationDestination(
-              icon: Icon(Icons.home),
-              label: 'Персонал',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.area_chart),
-              label: 'Статистика',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.location_city),
-              label: 'Филиалы',
-            ),
-            NavigationDestination(
               icon: Icon(Icons.shopping_cart),
               label: 'Товары',
-            )
-          ]),
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.add_shopping_cart),
+              label: 'Продажи',
+            ),
+          ]
+      ),
     );
   }
 
