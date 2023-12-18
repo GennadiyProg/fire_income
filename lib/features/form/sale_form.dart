@@ -32,7 +32,7 @@ class _AddSaleFormState extends State<AddSaleForm> {
   Future<void> createSale() async {
     await processDataSnack(
       context,
-      () async {
+          () async {
         _formKey.currentState?.save();
         user = await loadUser(context);
         final DateTime time = DateTime.now();
@@ -41,12 +41,19 @@ class _AddSaleFormState extends State<AddSaleForm> {
         sale.time = DateFormat("yyyy-MM-dd HH:mm:ss").format(time);
         final saleJson = sale.toJson();
         final response =
-            await DioRequest.postRequest('sale/create', saleJson);
+        await DioRequest.postRequest('sale/create', saleJson);
         final data = response.data;
         _formKey.currentState?.reset();
         return data;
       },
-      successBuilder: (data) => 'Добавлена продажа ${product?.name}',
+      successBuilder: (data) {
+        final name = product?.name;
+        setState(() {
+          category = null;
+          product = null;
+        });
+        return 'Добавлена продажа $name';
+      },
     );
   }
 
@@ -79,7 +86,8 @@ class _AddSaleFormState extends State<AddSaleForm> {
                     if (categories.isNotEmpty) ...[
                       Text(
                         "Категория",
-                        style: Theme.of(context)
+                        style: Theme
+                            .of(context)
                             .textTheme
                             .titleMedium
                             ?.copyWith(fontSize: 18),
@@ -98,17 +106,19 @@ class _AddSaleFormState extends State<AddSaleForm> {
                         },
                         items: categories
                             .map(
-                              (e) => DropdownMenuItem<Category>(
+                              (e) =>
+                              DropdownMenuItem<Category>(
                                 value: e,
                                 child: Text(e.name ?? e.id ?? ''),
                               ),
-                            )
+                        )
                             .toList(),
                       ),
                     ] else
                       Text(
                         "Для создания продажи добавьте категории",
-                        style: Theme.of(context)
+                        style: Theme
+                            .of(context)
                             .textTheme
                             .titleMedium
                             ?.copyWith(color: styles.dangerColor),
@@ -142,12 +152,12 @@ class _AddSaleFormState extends State<AddSaleForm> {
                         padding: const EdgeInsets.all(8.0),
                         child: ConstrainedBox(
                           constraints:
-                              BoxConstraints.tight(const Size(200, 50)),
+                          BoxConstraints.tight(const Size(200, 50)),
                           child: ElevatedButton(
                             onPressed: product != null
                                 ? () async {
-                                    await createSale();
-                                  }
+                              await createSale();
+                            }
                                 : null,
                             child: const Text('Submit'),
                           ),
@@ -215,40 +225,43 @@ class _ProductDropdownState extends State<ProductDropdown> {
             children: [
               Text(
                 "Товар",
-                style: Theme.of(context)
+                style: Theme
+                    .of(context)
                     .textTheme
                     .titleMedium
                     ?.copyWith(fontSize: 18),
               ),
               products.isNotEmpty
                   ? DropdownButton2<Product>(
-                      value: product,
-                      hint: const Text("Выберите товар"),
-                      isExpanded: true,
-                      onChanged: (newValue) {
-                        if (newValue != null) {
-                          setState(() {
-                            product = newValue;
-                          });
-                          widget.onChanged?.call(newValue);
-                        }
-                      },
-                      items: products
-                          .map(
-                            (e) => DropdownMenuItem<Product>(
-                              value: e,
-                              child: Text(e.name ?? e.id ?? ''),
-                            ),
-                          )
-                          .toList(),
-                    )
+                value: product,
+                hint: const Text("Выберите товар"),
+                isExpanded: true,
+                onChanged: (newValue) {
+                  if (newValue != null) {
+                    setState(() {
+                      product = newValue;
+                    });
+                    widget.onChanged?.call(newValue);
+                  }
+                },
+                items: products
+                    .map(
+                      (e) =>
+                      DropdownMenuItem<Product>(
+                        value: e,
+                        child: Text(e.name ?? e.id ?? ''),
+                      ),
+                )
+                    .toList(),
+              )
                   : Text(
-                      "В категории нет товаров",
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(color: styles.dangerColor),
-                    ),
+                "В категории нет товаров",
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(color: styles.dangerColor),
+              ),
             ],
           );
         }

@@ -30,7 +30,8 @@ class _StatisticScreenState extends State<StatisticScreen> {
     final response = await DioRequest.getRequest(chosenAddress, {});
     final data = response.data as List<dynamic>;
     print(data);
-    final list = data.map((e) => Statistic.fromJson(e)).toList();
+    final list = data.map((e) => Statistic.fromJson(e)).toList()
+      ..sort((b, a) => a.count?.compareTo(b.count ?? 0) ?? 0);
     switch (chosenAddress) {
       case 'chief/statistic/category':
         return Map.fromEntries(
@@ -39,8 +40,8 @@ class _StatisticScreenState extends State<StatisticScreen> {
         return Map.fromEntries(
             list.map((e) => MapEntry(e.branch?.kpp, e.count ?? 0)));
       case 'chief/statistic/time':
-        return Map.fromEntries(
-            list.map((e) => MapEntry(e.time.toString(), e.count ?? 0)));
+        return Map.fromEntries(list.map((e) => MapEntry(
+            DateFormat.yMMMM().format(e.date ?? DateTime.now()), e.count ?? 0)));
     }
     return <String?, int>{};
   }
@@ -84,27 +85,33 @@ class _StatisticScreenState extends State<StatisticScreen> {
                           label: const Text('Категория'),
                           selected: chosenAddress == statisticEndpoints[0],
                           onSelected: (bool selected) {
-                            setState(() {
-                              chosenAddress = statisticEndpoints[0];
-                            });
+                            if (selected) {
+                              setState(() {
+                                chosenAddress = statisticEndpoints[0];
+                              });
+                            }
                           },
                         ),
                         ChoiceChip(
                           label: const Text('Филиал'),
                           selected: chosenAddress == statisticEndpoints[1],
                           onSelected: (bool selected) {
-                            setState(() {
-                              chosenAddress = statisticEndpoints[1];
-                            });
+                            if (selected) {
+                              setState(() {
+                                chosenAddress = statisticEndpoints[1];
+                              });
+                            }
                           },
                         ),
                         ChoiceChip(
                           label: const Text('Время'),
                           selected: chosenAddress == statisticEndpoints[2],
                           onSelected: (bool selected) {
-                            setState(() {
-                              chosenAddress = statisticEndpoints[2];
-                            });
+                            if (selected) {
+                              setState(() {
+                                chosenAddress = statisticEndpoints[2];
+                              });
+                            }
                           },
                         ),
                       ],
@@ -117,7 +124,8 @@ class _StatisticScreenState extends State<StatisticScreen> {
                             final item = statistic.keys.toList()[index];
                             return ListTile(
                               title: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(item ?? ''),
                                   Text(statistic[item].toString())

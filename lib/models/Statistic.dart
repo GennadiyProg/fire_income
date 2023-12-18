@@ -6,19 +6,19 @@ import 'Branch.dart';
 class Statistic {
   Category? category;
   Branch? branch;
-  DateTime? time;
+  DateTime? date;
   int? count;
 
   Statistic.empty();
 
-  Statistic({this.category, this.branch, this.time, this.count});
+  Statistic({this.category, this.branch, this.date, this.count});
 
   static Statistic fromJson(Map<String, dynamic> json) {
     Statistic s = Statistic();
     s.category = json['category'] != null ? Category.fromJson(json['category']) : null ;
     s.branch = json['branch'] != null ? Branch.fromJson(json['branch']) : null;
     s.count = json['count'];
-    s.time = json['time'];
+    s.date = json['date'] != null ? DateTime.tryParse(json['date']) : null;
 
     return s;
   }
@@ -27,6 +27,6 @@ class Statistic {
         'category': category?.toJson(),
         'seller': branch?.toJson(),
         'count': count,
-        'time': time,
+        'date': date.toString(),
       };
 }
