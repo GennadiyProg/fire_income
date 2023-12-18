@@ -19,7 +19,7 @@ class DioRequest{
     );
   }
 
-  static postRequest(String url, Map<String, dynamic> data) {
+  static postRequest(String url, [Map<String, dynamic>? data]) {
     return Dio().post(
       '$address/$url',
       data: data,

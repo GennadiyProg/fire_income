@@ -20,7 +20,7 @@ class _SellerListState extends State<SellerList> {
   Future<void> deleteSeller(username) async {
     try {
       final res =
-          await DioRequest.deleteRequest('branch/${widget.kpp}/sellers/detach');
+          await DioRequest.postRequest('branch/${widget.kpp}/sellers/$username/detach');
       setState(() {});
       if (mounted && res != null) {
         showDeleteSnackBar(context, text: "Продавец успешно откреплён");
