@@ -2,6 +2,7 @@ import 'package:fire_income/features/form/add_org_form.dart';
 import 'package:fire_income/features/list/category_list.dart';
 import 'package:fire_income/features/list/supervisor_list.dart';
 import 'package:fire_income/features/list/branch_list.dart';
+import 'package:fire_income/screens/statistic_screen.dart';
 import 'package:flutter/material.dart';
 
 class ChiefScreen extends StatefulWidget {
@@ -17,7 +18,7 @@ class _ChiefScreen extends State<ChiefScreen> {
   int _currentIndex = 0;
   final List<Widget> _children = [
     const SupervisorList(),
-    const AddOrgForm(),
+    const StatisticScreen(),
     const BranchList(role: "CHIEF"),
     const CategoryList()
   ];

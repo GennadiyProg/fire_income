@@ -18,7 +18,7 @@ class Sale {
     Sale s = Sale();
     s.product = Product.fromJson(json['product']);
     s.seller = User.fromJson(json['seller']);
-    s.amount = json['measureUnit'];
+    s.amount = json['amount'];
     s.time = json['time'];
 
     return s;
@@ -26,7 +26,7 @@ class Sale {
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'id': id,
-        'category': product?.toJson(),
+        'product': product?.toJson(),
         'seller': seller?.toJson(),
         'amount': amount,
         'time': time,

@@ -39,8 +39,9 @@ class _AddSaleFormState extends State<AddSaleForm> {
         sale.product = product;
         sale.seller = user;
         sale.time = DateFormat("yyyy-MM-dd HH:mm:ss").format(time);
+        final saleJson = sale.toJson();
         final response =
-            await DioRequest.postRequest('sale/create', sale.toJson());
+            await DioRequest.postRequest('sale/create', saleJson);
         final data = response.data;
         _formKey.currentState?.reset();
         return data;
